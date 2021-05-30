@@ -15,7 +15,24 @@
 * 각 요구사항을 구현하는 것이 중요한 것이 아니라 구현 과정을 통해 학습한 내용을 인식하는 것이 배움에 중요하다. 
 
 ### 요구사항 1 - http://localhost:8080/index.html로 접속시 응답
-* 
+- HTTP Header
+    - GET /index.html HTTP/1.1
+    - Host: localhost:8080
+    - Connection: keep-alive
+    - Accept: */*
+- HINT 1단계
+    - InputStream을 한 줄 단위로 읽기 위해 BufferedReader를 생성한다.
+    - BufferedReader.readLine() 메서드를 활용해 라인별로 HTTP 요청 정보를 읽는다.
+    - HTTP 요청 정보 전체를 출력한다.
+        - 헤더 마지막은 while (!"".equals(line)) {}로 확인 가능하다.
+        - linden null 값인 경우에 대한 예외 처리도 해야 한다. 그렇지 않을 경우 무한 루프에 빠진다. (if (line == null) { return;})
+- HINT 2단계
+    - HTTP 요청 정보의 첫 번째 라인에서 요청 URL을 추출한다.
+        - String[] tokens = line.split(" ");를 활용해 문자열을 분리할 수 있다.
+    - 구현은 별도의 유틸 클래스를 만들고 단위 테스트를 만들어 진행하면 편하다.
+- HINT 3단계
+    - 요청 URL에 해당하는 파일을 webapp 디렉토리에서 읽어 전달하면 된다.
+    - 구글에서 "java files readaiibytes"로 검색해 파일 데이터를 byte[]로 읽는다.    
 
 ### 요구사항 2 - get 방식으로 회원가입
 * 
