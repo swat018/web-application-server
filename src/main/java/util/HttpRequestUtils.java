@@ -1,13 +1,25 @@
 package util;
 
+import java.sql.PreparedStatement;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class HttpRequestUtils {
+    private static final Logger log = LoggerFactory.getLogger(HttpRequestUtils.class);
+
+    public static String getUrl(String firstLine) {
+        String[] splited = firstLine.split(" ");
+        String path = splited[1];
+        log.debug("request path : {}", path);
+        return path;
+    }
+
     /**
      * @param queryString은
      *            URL에서 ? 이후에 전달되는 field1=value1&field2=value2 형식임
