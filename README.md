@@ -35,7 +35,20 @@
     - 구글에서 "java files readaiibytes"로 검색해 파일 데이터를 byte[]로 읽는다.    
 
 ### 요구사항 2 - get 방식으로 회원가입
-* 
+- HTML과 URL을 비교해 보고 사용자가 입력한 값을 파싱해 model.User 클래스에 저장한다.
+- HTTP Header
+    - GET /usr/create?usrId=javajigi&password=password&name=JaeSung
+    - HTTP /1.1
+- HINT
+    - HTTP 요청의 첫 번째 라인에서 요청 URL을 추출한다
+    - 요청 URL에서 접근 경로와 이름=값으로 전달되는 데이터를 추출해 User 클래스에 담는다.
+    - 구현은 가능하면 JUnit을 활용해 단위 테스트를 진행하면서 하면 좀 더 효과적으로 개발 가능하다.
+    - 이름=값 파싱은 util.HttpRequestUtils 클래스의 parseQueryString() 메서드를 활용한다.
+    - 요청 URL과 이름 값을 분리해야 한다.
+        - String url = "/?data=234";
+        - int index = url.indexOf("?");
+        - String requestPath = url.substring(0, index);
+        - String params = url.substring(index+1);
 
 ### 요구사항 3 - post 방식으로 회원가입
 * 
