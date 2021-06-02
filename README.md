@@ -51,7 +51,21 @@
         - String params = url.substring(index+1);
 
 ### 요구사항 3 - post 방식으로 회원가입
-* 
+- [http://localhost:8080/user/form.html](http://localhost:8080/user/form.html) 파일의  form 태그 methodFMF get에서 post로 수정한 후 회원가입이 정상적으로 동작하도록 구현한다.
+- **HTTP Header와  Body**
+    - POST /user/create HTTP/1.1
+    - Host: localhost:8080
+    - Connection: keep-alive
+    - Content-Length: 59
+    - Content-Type: application/X-www-form-urlencoded
+    - Accept: */*
+    - **userId=javajigi&password=password&name=JaeSung**
+- **HINT**
+    - Post로 데이터를 전달할 경우 전달하는 데이터는 HTTP 본문에 담긴다.
+    - HTTP 본문은 HTTP 헤더 이후 빈 공백을 가지는 한 줄(line) 다음부터 시작한다.
+    - HTTP 본문에 전달되는 데이터는 GET 방식으로 데이터를 전달할 때의 이름=값과 같다.
+    - BufferedReader에서 본뮨 데이터는  util.IOUtils 클래스의 readData() 메서드를 확용한다. 본문의 길이는 HTTP 헤더의 Content-Length의 값이다
+    - 회원가입시 입력한 모든 데이터를 추출해 User 객체를 생성한다.
 
 ### 요구사항 4 - redirect 방식으로 이동
 * 
