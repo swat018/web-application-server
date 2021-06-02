@@ -42,10 +42,10 @@ public class RequestHandler extends Thread {
                 url = "/index.html";
             }
 
-//            while(!"".equals(line)) {
-//                log.debug("header : {}", line);
-//                line = br.readLine();
-//            }
+            while(!"".equals(line)) {
+                log.debug("header : {}", line);
+                line = br.readLine();
+            }
 
             DataOutputStream dos = new DataOutputStream(out);
             byte[] body = Files.readAllBytes(new File("./webapp"+url).toPath());
