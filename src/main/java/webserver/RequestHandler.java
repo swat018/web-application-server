@@ -3,6 +3,7 @@ package webserver;
 import java.io.*;
 import java.net.Socket;
 import java.nio.file.Files;
+import java.util.HashMap;
 import java.util.Map;
 
 import model.User;
@@ -31,6 +32,17 @@ public class RequestHandler extends Thread {
                 return;
             }
             String url = HttpRequestUtils.getUrl(line);
+            Map<String, String> headers = new HashMap<String, String>();
+            while(!"".equals(line)) {
+                log.debug("header : {}", line);
+                line = br.readLine();
+                String[] headerTokens = line.split("; ");
+                if (headerTokens.length == 2) {
+                    headers.put(headerTokens[0], headerTokens[1]);
+                }
+            }
+            log.debug("Content-Length : {}", headers.get("Content-Length"));
+
             if (url.startsWith("/create")) {
                 int index = url.indexOf("?");
                 String requestPath = url.substring(0, index);
@@ -42,10 +54,10 @@ public class RequestHandler extends Thread {
                 url = "/index.html";
             }
 
-            while(!"".equals(line)) {
-                log.debug("header : {}", line);
-                line = br.readLine();
-            }
+//            while(!"".equals(line)) {
+//                log.debug("header : {}", line);
+//                line = br.readLine();
+//            }
 
             DataOutputStream dos = new DataOutputStream(out);
             byte[] body = Files.readAllBytes(new File("./webapp"+url).toPath());
