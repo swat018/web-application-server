@@ -10,6 +10,7 @@ import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import util.HttpRequestUtils;
+import util.IOUtils;
 
 public class RequestHandler extends Thread {
     private static final Logger log = LoggerFactory.getLogger(RequestHandler.class);
@@ -31,23 +32,33 @@ public class RequestHandler extends Thread {
             if (line == null) {
                 return;
             }
+
             String url = HttpRequestUtils.getUrl(line);
             Map<String, String> headers = new HashMap<String, String>();
+            int contentLength = 0;
             while(!"".equals(line)) {
                 log.debug("header : {}", line);
                 line = br.readLine();
-                String[] headerTokens = line.split("; ");
-                if (headerTokens.length == 2) {
-                    headers.put(headerTokens[0], headerTokens[1]);
+//                String[] headerTokens = line.split(": ");
+//                if (headerTokens.length == 2) {
+//                    headers.put(headerTokens[0], headerTokens[1]);
+//                }
+                if (line.contains("Content-Length")) {
+                    contentLength = getContentLength(line);
                 }
             }
+
             log.debug("Content-Length : {}", headers.get("Content-Length"));
 
-            if (url.startsWith("/create")) {
-                int index = url.indexOf("?");
-                String requestPath = url.substring(0, index);
-                String queryString = url.substring(index + 1);
-                Map<String,String> params = HttpRequestUtils.parseQueryString(queryString);
+            if (url.startsWith("/user/create")) {
+//                int index = url.indexOf("?");
+//                String requestPath = url.substring(0, index);
+//                String queryString = url.substring(index + 1);
+
+                String requestBody = IOUtils.readData(br, contentLength);
+                log.debug("Request Body : {}", requestBody);
+//                Map<String,String> params = HttpRequestUtils.parseQueryString(queryString);
+                Map<String,String> params = HttpRequestUtils.parseQueryString(requestBody);
                 User user = new User(params.get("userId"), params.get("password"), params.get("name"), params.get("email"));
                 log.debug("User : {}", user);
 
@@ -66,6 +77,11 @@ public class RequestHandler extends Thread {
         } catch (IOException e) {
             log.error(e.getMessage());
         }
+    }
+
+    private int getContentLength(String line){
+        String[] heaserTokens = line.split(":");
+        return Integer.parseInt(heaserTokens[1].trim());
     }
 
     private void response200Header(DataOutputStream dos, int lengthOfBodyContent) {

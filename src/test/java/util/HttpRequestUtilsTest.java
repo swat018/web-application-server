@@ -51,7 +51,6 @@ public class HttpRequestUtilsTest {
         assertThat(parameters.get("JSessionId"), is("1234"));
         assertThat(parameters.get("session"), is(nullValue()));
     }
-
     @Test
     public void getKeyValue() throws Exception {
         Pair pair = HttpRequestUtils.getKeyValue("userId=javajigi", "=");
