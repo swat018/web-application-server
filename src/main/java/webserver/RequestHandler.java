@@ -62,18 +62,19 @@ public class RequestHandler extends Thread {
                 User user = new User(params.get("userId"), params.get("password"), params.get("name"), params.get("email"));
                 log.debug("User : {}", user);
 
-                url = "/index.html";
+                DataOutputStream dos = new DataOutputStream(out);
+                response302Header(dos);
+            } else {
+                DataOutputStream dos = new DataOutputStream(out);
+                byte[] body = Files.readAllBytes(new File("./webapp"+url).toPath());
+                response200Header(dos, body.length);
+                responseBody(dos, body);
             }
-
 //            while(!"".equals(line)) {
 //                log.debug("header : {}", line);
 //                line = br.readLine();
 //            }
 
-            DataOutputStream dos = new DataOutputStream(out);
-            byte[] body = Files.readAllBytes(new File("./webapp"+url).toPath());
-            response200Header(dos, body.length);
-            responseBody(dos, body);
         } catch (IOException e) {
             log.error(e.getMessage());
         }
@@ -82,6 +83,16 @@ public class RequestHandler extends Thread {
     private int getContentLength(String line){
         String[] heaserTokens = line.split(":");
         return Integer.parseInt(heaserTokens[1].trim());
+    }
+
+    private void response302Header(DataOutputStream dos) {
+        try {
+            dos.writeBytes("HTTP/1.1 302 Found \r\n");
+            dos.writeBytes("Location: /index.html \r\n");
+            dos.writeBytes("\r\n");
+        } catch (IOException e) {
+            log.error(e.getMessage());
+        }
     }
 
     private void response200Header(DataOutputStream dos, int lengthOfBodyContent) {
