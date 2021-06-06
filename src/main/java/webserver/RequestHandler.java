@@ -6,6 +6,7 @@ import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
 
+import db.DataBase;
 import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,42 +40,46 @@ public class RequestHandler extends Thread {
             while(!"".equals(line)) {
                 log.debug("header : {}", line);
                 line = br.readLine();
-//                String[] headerTokens = line.split(": ");
-//                if (headerTokens.length == 2) {
-//                    headers.put(headerTokens[0], headerTokens[1]);
-//                }
                 if (line.contains("Content-Length")) {
                     contentLength = getContentLength(line);
                 }
             }
-
             log.debug("Content-Length : {}", headers.get("Content-Length"));
 
             if (url.startsWith("/user/create")) {
-//                int index = url.indexOf("?");
-//                String requestPath = url.substring(0, index);
-//                String queryString = url.substring(index + 1);
-
                 String requestBody = IOUtils.readData(br, contentLength);
                 log.debug("Request Body : {}", requestBody);
-//                Map<String,String> params = HttpRequestUtils.parseQueryString(queryString);
                 Map<String,String> params = HttpRequestUtils.parseQueryString(requestBody);
                 User user = new User(params.get("userId"), params.get("password"), params.get("name"), params.get("email"));
                 log.debug("User : {}", user);
+                DataBase.addUser(user);
 
                 DataOutputStream dos = new DataOutputStream(out);
                 response302Header(dos);
+            } else if ("/user/login".equals(url)) {
+                String requestBody = IOUtils.readData(br, contentLength);
+                log.debug("Request Body : {}", requestBody);
+                Map<String,String> params = HttpRequestUtils.parseQueryString(requestBody);
+                log.debug("UserId : {}, passwd : {} ", params.get("userId"), params.get("password"));
+                User user = DataBase.findUserById(params.get("uerId"));
+                log.debug("password : {}", user);
+
+//                if (user == null) {
+//                    log.debug("User Not Found");
+//                }else if (user.getPassword().equals(params.get("password"))) {
+//                    log.debug("login success!!");
+//                } else {
+//                    log.debug("Password Mismach!!");
+//                }
+//
+//                DataOutputStream dos = new DataOutputStream(out);
+//                response302Header(dos);
             } else {
                 DataOutputStream dos = new DataOutputStream(out);
                 byte[] body = Files.readAllBytes(new File("./webapp"+url).toPath());
                 response200Header(dos, body.length);
                 responseBody(dos, body);
             }
-//            while(!"".equals(line)) {
-//                log.debug("header : {}", line);
-//                line = br.readLine();
-//            }
-
         } catch (IOException e) {
             log.error(e.getMessage());
         }
@@ -88,6 +93,7 @@ public class RequestHandler extends Thread {
     private void response302Header(DataOutputStream dos) {
         try {
             dos.writeBytes("HTTP/1.1 302 Found \r\n");
+            dos.writeBytes("Set-Cookied: logined=true \r\n");
             dos.writeBytes("Location: /index.html \r\n");
             dos.writeBytes("\r\n");
         } catch (IOException e) {
