@@ -54,26 +54,24 @@ public class RequestHandler extends Thread {
                 log.debug("User : {}", user);
                 DataBase.addUser(user);
 
-                DataOutputStream dos = new DataOutputStream(out);
-                response302Header(dos);
             } else if ("/user/login".equals(url)) {
-                String requestBody = IOUtils.readData(br, contentLength);
-                log.debug("Request Body : {}", requestBody);
-                Map<String,String> params = HttpRequestUtils.parseQueryString(requestBody);
+                String body = IOUtils.readData(br, contentLength);
+                log.debug("Request Body : {}", body);
+                Map<String,String> params = HttpRequestUtils.parseQueryString(body);
                 log.debug("UserId : {}, passwd : {} ", params.get("userId"), params.get("password"));
                 User user = DataBase.findUserById(params.get("uerId"));
                 log.debug("password : {}", user);
 
-//                if (user == null) {
-//                    log.debug("User Not Found");
-//                }else if (user.getPassword().equals(params.get("password"))) {
-//                    log.debug("login success!!");
-//                } else {
-//                    log.debug("Password Mismach!!");
-//                }
-//
-//                DataOutputStream dos = new DataOutputStream(out);
-//                response302Header(dos);
+                if (user == null) {
+                    log.debug("User Not Found");
+                }else if (user.getPassword().equals(params.get("password"))) {
+                    log.debug("login success!!");
+                } else {
+                    log.debug("Password Mismach!!");
+                }
+
+                DataOutputStream dos = new DataOutputStream(out);
+                response302Header(dos, );
             } else {
                 DataOutputStream dos = new DataOutputStream(out);
                 byte[] body = Files.readAllBytes(new File("./webapp"+url).toPath());
@@ -90,11 +88,11 @@ public class RequestHandler extends Thread {
         return Integer.parseInt(heaserTokens[1].trim());
     }
 
-    private void response302Header(DataOutputStream dos) {
+    private void response302Header(DataOutputStream dos, String url) {
         try {
             dos.writeBytes("HTTP/1.1 302 Found \r\n");
             dos.writeBytes("Set-Cookied: logined=true \r\n");
-            dos.writeBytes("Location: /index.html \r\n");
+            dos.writeBytes("Location: " + url +" \r\n");
             dos.writeBytes("\r\n");
         } catch (IOException e) {
             log.error(e.getMessage());
