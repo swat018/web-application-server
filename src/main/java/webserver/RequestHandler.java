@@ -33,22 +33,24 @@ public class RequestHandler extends Thread {
             if (line == null) {
                 return;
             }
+            log.debug("request header : {}", line);
 
             String url = HttpRequestUtils.getUrl(line);
             Map<String, String> headers = new HashMap<String, String>();
             int contentLength = 0;
-            while(!"".equals(line)) {
-                log.debug("header : {}", line);
+            boolean logined = false;
+            while(!line.equals("")) {
                 line = br.readLine();
+                log.debug("header : {}", line);
+
                 if (line.contains("Content-Length")) {
                     contentLength = getContentLength(line);
                 }
             }
             log.debug("Content-Length : {}", headers.get("Content-Length"));
 
-            if (url.startsWith("/user/create")) {
+            if ("/user/create".equals(url)) {
                 String requestBody = IOUtils.readData(br, contentLength);
-                log.debug("Request Body : {}", requestBody);
                 Map<String,String> params = HttpRequestUtils.parseQueryString(requestBody);
                 User user = new User(params.get("userId"), params.get("password"), params.get("name"), params.get("email"));
                 log.debug("User : {}", user);
@@ -56,14 +58,11 @@ public class RequestHandler extends Thread {
 
                 DataOutputStream dos = new DataOutputStream(out);
                 response302Header(dos, "/index.html");
-            } else if (url.equals("/user/login")) {
+            } else if ("/user/login".equals(url)) {
                 String body = IOUtils.readData(br, contentLength);
-                log.debug("Request Body : {}", body);
                 Map<String,String> params = HttpRequestUtils.parseQueryString(body);
                 log.debug("UserId : {}, passwd : {} ", params.get("userId"), params.get("password"));
-                String id = params.get("uerId");
-                User user = DataBase.findUserById(id);
-                log.debug("password : {}", user);
+                User user = DataBase.findUserById(params.get("userId"));
 
                 if (user == null) {
                     log.debug("User Not Found");
