@@ -68,10 +68,34 @@
     - 회원가입시 입력한 모든 데이터를 추출해 User 객체를 생성한다.
 
 ### 요구사항 4 - redirect 방식으로 이동
-* 
+- "회원가입"을 완료한 후 /index.html 페이지로 이동한다.
+- **HINT**
+  - HTTP 응답 헤더의 status code를 200이 아니라 302 code를 사용한다.
+  - [http://en.wikipedia.org/wiki/HTTP_302](http://en.wikipedia.org/wiki/HTTP_302) 문서 참고
 
-### 요구사항 5 - cookie
-* 
+### 요구사항 5 - cookie (로그인하기)
+- "로그인" 메뉴를 클릭하면 [http://localhost:8080/user/login.html](http://localhost:8080/user/login.html으로) 으로 이동해 로그인
+- 로그인이 성공하면 /index.html 페이지로 이동. 로그인이 실패하면 /user/login_failed.html로 이동.
+- 로그인이 성공하면 쿠키를 활용해 로그인 상태를 유지할 수 있어야 한다.
+- **로그인이 성공**할 경우 `요청 헤더의 Cookie 헤더 값이 logined=true`, **로그인이 실패**하면 `Cookie 헤더 값이 logined=false`로 전달되어야 한다.
+- **HINT 1단계**
+  - 로그인 성공시 HTTP 응답 헤더(response header)에 Set-Cookie를 추가해 로그인 성공 여부를 전달한다.
+  - **응답 헤더의 예시**
+    - HTTP/1.1 200 OK
+    - Content-Type: text/html
+    - **Set-Cookie: logined=true**
+  - 위와 같이 응답을 보내면 브라우저는 다음과 같이 HTTP 요청 헤더에 Cookie 값으로 전달한다. 이렇게 전달받은 Cookie 값으로 로그인 유무를 판단한다.
+  - **다음 요청에 대한 요청 헤더 예시**
+    - GET /index.html HTTP/1.1
+    - Host: localhost:8080
+    - Connection: keep-alive
+    - Accep: */ * ****
+    - **Cookie: logined=true**
+- **HINT 2단계**
+  - 정상적으로 로그인 되었는지 확인하려면 앞 단계에서 회원가입한 데이터를 유지해야 한다.
+    - 앞 단계에서 회원가입할 때 생성한  User 객체를 DataBase.addUser() 메서드를 활용해 저장한다.
+  - 아이디와 비밀번호가 같은지를 확인해 로그인이 성공하면 응답 헤더의 Set-Cookie 값을 logined=true, 로그인이 실패할 경우 Set-Cookie 값을 logined=false로 설정한다.
+  - 응답 헤더에 Set-Cookie 값을 설정한 후 요청 헤더에 Cookie 값이 전달되는지 확인한다.
 
 ### 요구사항 6 - stylesheet 적용
 * 
