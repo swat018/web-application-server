@@ -97,8 +97,25 @@
   - 아이디와 비밀번호가 같은지를 확인해 로그인이 성공하면 응답 헤더의 Set-Cookie 값을 logined=true, 로그인이 실패할 경우 Set-Cookie 값을 logined=false로 설정한다.
   - 응답 헤더에 Set-Cookie 값을 설정한 후 요청 헤더에 Cookie 값이 전달되는지 확인한다.
 
-### 요구사항 6 - stylesheet 적용
-* 
+### 요구사항 6 - 사용자 목록 출력
+- 접근하는 사용자가 "로그인" 상태일 경우(Cookie 값이 logined=true), [http://localhost:8080/user/list](http://localhost:8080/user/list)로 접근했을 때 사용자 목록을 출력
+- 만약 로그인하지 않은 상태라면 로그인 페이지(login.html)로 이동한다.
+- **HINT**
+  - 로그인 여부를 판단하기 위해  Cookie 값을 파싱하는 작업은 `util.HttpRequestUtil 클래스의 parseCookies() 메소드`를 활용한다.
+  - `String 값`을 `Boolean`으로 변환하는 메소드는 `Boolean.parseBoolean()`으로 할 수 있다.
+  - 자바 클래스 중 `StringBuilder`를 활용해 사용자 목록을 출력하는 HTML을 동적으로 생성한 후 응답으로 보낸다.
+  - 구글에서 "java stringbuilder example"로 검색해 StringBuilder 사용법을 찾는다.
 
-### heroku 서버에 배포 후
-* 
+### 요구사항 7 - CSS 지원하기
+- CSS 파일을 지원하도록 구현한다.
+- **HTTP Header**
+  - GET ./css/style.css HTTP/1.1
+  - Host: localhost:8080
+  - Accept: text/css, */*; q=0.1
+  - Connecttion: keep-alive
+- **HINT**
+  - 응답 헤더의 Connect-Type을 text/html로 보내면 브라우저는 HTML 파일을 인식하기 때문에 CSS가 정상적으로 동작하지 않는다.
+  - CSS인 경우, 응답헤더의 Context-Type을 text/css로 전송한다. Content-Type은 확장자를통해 구분할 수 있으며, 요청 헤더의 Accept를 활용할 수 있다.
+
+
+
