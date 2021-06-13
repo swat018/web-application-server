@@ -116,6 +116,3 @@
 - **HINT**
   - 응답 헤더의 Connect-Type을 text/html로 보내면 브라우저는 HTML 파일을 인식하기 때문에 CSS가 정상적으로 동작하지 않는다.
   - CSS인 경우, 응답헤더의 Context-Type을 text/css로 전송한다. Content-Type은 확장자를통해 구분할 수 있으며, 요청 헤더의 Accept를 활용할 수 있다.
-
-
-
