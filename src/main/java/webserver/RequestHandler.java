@@ -1,11 +1,9 @@
 package webserver;
 
 import java.io.*;
-import java.net.HttpCookie;
 import java.net.Socket;
 import java.nio.file.Files;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 
 import db.DataBase;
